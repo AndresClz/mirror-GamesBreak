@@ -12,8 +12,13 @@ object UserRepository {
         users.add(User(1510L, "Diegote", "@12345", "Diego", "Gonzales", 12.0, "2018/04/15"))
     }
 
-    fun login() : User? {
-        return null //TODO Implementar solucion para validar e iniciar sesion un usuario
+    fun get(): List<User> = users
+
+    fun login(nickName: String, password: String) : User? {
+        for(user in users)
+            if(user.nickName == nickName && user.password == password) return user
+
+        return null
     }
 
 }
