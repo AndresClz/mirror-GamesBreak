@@ -2,7 +2,7 @@ package repositories
 
 import data.User
 
-object UserRepository {
+object UserRepository: RepositoryInterface<User> {
 
     private val users = mutableListOf<User>()
 
@@ -12,13 +12,32 @@ object UserRepository {
         users.add(User(1510L, "Diegote", "@12345", "Diego", "Gonzales", 12.0, "2018/04/15"))
     }
 
-    fun get(): List<User> = users
+//    fun login(nickName: String, password: String) : User? {
+//        for(user in users)
+//            if(user.nickName == nickName && user.password == password) return user
+//
+//        return null
+//    }
 
-    fun login(nickName: String, password: String) : User? {
-        for(user in users)
-            if(user.nickName == nickName && user.password == password) return user
-
+    override fun getByID(id: String): User? {
+        for(user in users) {
+            if (user.nickName == id) {
+                return user
+            }
+        }
         return null
+    }
+
+    override fun getAll(): List<User> {
+        return users
+    }
+
+    override fun removeItem(id: Long): Boolean {
+        TODO("Not yet implemented")
+    }
+
+    override fun addItem(item: User): Boolean {
+        TODO("Not yet implemented")
     }
 
 }

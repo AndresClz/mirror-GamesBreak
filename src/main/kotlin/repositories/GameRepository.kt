@@ -2,7 +2,7 @@ package repositories
 
 import data.Game
 
-object GameRepository {
+object GameRepository: RepositoryInterface<Game> {
 
     private val games = mutableListOf<Game>()
 
@@ -23,11 +23,28 @@ object GameRepository {
     }
 
     fun get() : List<Game> {
+
         return emptyList() //TODO Implementar solucion para obtener todos los juegos
     }
 
     fun getById(id: Long) : Game {
         return games[0] //TODO Implementar solucion para obtener el juego solicitado
+    }
+
+    override fun getByID(id: String): Game? {
+        TODO("Not yet implemented")
+    }
+
+    override fun getAll(): List<Game>? {
+        TODO("Not yet implemented")
+    }
+
+    override fun removeItem(id: Long): Boolean {
+        TODO("Not yet implemented")
+    }
+
+    override fun addItem(item: Game): Boolean {
+        TODO("Not yet implemented")
     }
 
 }
