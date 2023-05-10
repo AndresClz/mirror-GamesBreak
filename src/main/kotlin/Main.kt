@@ -167,29 +167,28 @@ fun preparePurchase(game: Game): Purchase {
     val lastPurchaseID = PurchaseRepository.getAll()?.last()?.id?.plus(1L) ?: 0L
     val userID = Credentials.getUserID() ?: 0L
     val todayDate = LocalDate.now()
-    val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+    val formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd")
     val formattedDate = todayDate.format(formatter)
     val price = processPrice(game.price)
     return Purchase(lastPurchaseID, userID, game.id, price, formattedDate)
 }
 
 fun processPrice(gamePrice: Double): Double {
-    var intermediary: IntermediaryInterface = Intermediary(gamePrice)
+    val intermediary: IntermediaryInterface
     print("Ingrese que intermediario quiere usar:")
-    var newPrice = 0.0
     print("\n 1. Steam \t 2.Epic Games\t 3.Nakama: \n")
     var userIntermediary = readln()
-    while (userIntermediary != "1" && userIntermediary != "2" && userIntermediary != "3"){
+    while (userIntermediary != "1" && userIntermediary != "2" && userIntermediary != "3") {
         print("$userIntermediary no es una opcion valida, por favor ingrese una opcion nuevamente: \n1. Steam \t2. Epic Games\n3.Nakama")
         userIntermediary = readln()
     }
-    when (userIntermediary) {
-        "1"-> intermediary = SteamIntermediary(gamePrice)
-        "2"-> intermediary = EpicGamesIntermediary(gamePrice)
-        "3"-> intermediary = NakamaIntermediary(gamePrice)
+    intermediary = when (userIntermediary) {
+        "1" -> SteamIntermediary()
+        "2" -> EpicGamesIntermediary()
+        "3" -> NakamaIntermediary()
+        else -> SteamIntermediary()
     }
-    newPrice = intermediary.processPurchase()
-    return newPrice
+    return intermediary.processPurchase(gamePrice)
 }
 
 fun makePurchase(game: Game, userCurrentMoney: Double?) {

@@ -1,7 +1,6 @@
 package intermediaries
 
 interface IntermediaryInterface {
-    var price: Double
-    fun processPurchase():Double
+    fun processPurchase(price: Double):Double
 
 }
