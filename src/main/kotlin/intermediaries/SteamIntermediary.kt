@@ -1,8 +1,8 @@
 package intermediaries
 
-class SteamIntermediary(price: Double) : Intermediary(price) {
-    override fun processPurchase(): Double {
-        super.processPurchase()
-        return (price + price.times(0.02))
+class SteamIntermediary() : IntermediaryInterface {
+    private val FIRST_COMMISSION = 0.02
+    override fun processPurchase(price: Double): Double {
+        return (price.plus(price.times(FIRST_COMMISSION)))
     }
 }
