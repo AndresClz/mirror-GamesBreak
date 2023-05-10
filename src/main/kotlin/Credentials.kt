@@ -34,8 +34,8 @@ object Credentials {
     fun getUserSurname(): String? {
         return this.userSurname
     }
-    fun getUserCreationDate(): String? {
-        return this.creationDate
+    fun getUserCreationDate(): LocalDate? {
+        return this.initDate
     }
     fun getUserMoney(): Double? {
         return this.userMoney
