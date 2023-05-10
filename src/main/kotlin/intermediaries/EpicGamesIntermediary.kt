@@ -20,6 +20,7 @@ class EpicGamesIntermediary() : IntermediaryInterface {
         }
         else {
             (price.plus(price.times(SECOND_COMMISSION)))
+
         }
     }
 }
