@@ -12,13 +12,6 @@ object UserRepository: RepositoryInterface<User> {
         users.add(User(1510L, "Diegote", "@12345", "Diego", "Gonzales", 12.0, "2018/04/15"))
     }
 
-//    fun login(nickName: String, password: String) : User? {
-//        for(user in users)
-//            if(user.nickName == nickName && user.password == password) return user
-//
-//        return null
-//    }
-
     override fun getByID(id: String): User? {
         for(user in users) {
             if (user.nickName == id) {

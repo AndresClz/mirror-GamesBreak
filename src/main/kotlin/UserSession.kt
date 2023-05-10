@@ -21,6 +21,7 @@ object UserSession {
             }
         }
     }
-    init {
+    fun isUserLogged(): Boolean {
+        return this.isLogged
     }
 }
