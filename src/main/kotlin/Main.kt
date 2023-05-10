@@ -3,6 +3,7 @@ import data.Purchase
 import intermediaries.*
 import repositories.GameRepository
 import repositories.PurchaseRepository
+import java.lang.NumberFormatException
 import java.time.LocalDate
 import java.time.Period
 import java.time.format.DateTimeFormatter
@@ -120,41 +121,51 @@ fun showPurchaseMenu() {
     print("\nSu saldo actual es de $userCurrentMoney")
 
     print("\nIngrese el ID del juego que quiere comprar o X para salir \n")
+
     var gameID = readln()
+    try {
+        while (gameID.lowercase() != "x") {
+            var gameToBuy: Game? = GameRepository.getByID(gameID)
+            var gameFound: Boolean = (if(gameToBuy == null) false else true)
+            var canBePurchased: Boolean = (canUserBuyIt( if (gameFound) gameToBuy!!.price else 0.0))
 
-    while (gameID.lowercase() != "x") {
-        var gameToBuy: Game? = GameRepository.getByID(gameID)
-        var gameFound: Boolean = (if(gameToBuy == null) false else true)
-        var canBePurchased: Boolean = (canUserBuyIt( if (gameFound) gameToBuy!!.price else 0.0))
 
+            while (!gameFound || !canBePurchased) {
+                if(!gameFound) {
+                    print("Juego no encontrado $gameID\n")
+                }
+                if (!canBePurchased) {
+                    print("Saldo Insuficiente")
+                }
+                print("\nSu saldo actual es de $userCurrentMoney")
+                print("\nIngrese el ID del juego que quiere comprar o X para salir \n")
+                gameID = readln()
+                if (gameID.lowercase() == "x"){ return }
+                gameToBuy = GameRepository.getByID(gameID)
+                gameFound = (if(gameToBuy == null) false else true)
+                canBePurchased = (canUserBuyIt( if (gameFound) gameToBuy!!.price else 0.0))
 
-        while (!gameFound || !canBePurchased) {
-            if(!gameFound) {
-                print("Juego no encontrado $gameID\n")
             }
-            if (!canBePurchased) {
-                print("Saldo Insuficiente")
-            }
+            if (gameToBuy == null) return
+            if (gameID.lowercase() == "x"){ return }
+
+            print("Usted ha seleccionado ${gameToBuy.name} con un precio base de ${gameToBuy.price}\n")
+            makePurchase(gameToBuy,userCurrentMoney)
+            userCurrentMoney = Credentials.getUserMoney()
+            showGames()
             print("\nSu saldo actual es de $userCurrentMoney")
             print("\nIngrese el ID del juego que quiere comprar o X para salir \n")
             gameID = readln()
-            if (gameID.lowercase() == "x"){ return }
-            gameToBuy = GameRepository.getByID(gameID)
-            gameFound = (if(gameToBuy == null) false else true)
-            canBePurchased = (canUserBuyIt( if (gameFound) gameToBuy!!.price else 0.0))
-
         }
-        if (gameToBuy == null) return
-        if (gameID.lowercase() == "x"){ return }
-
-        print("Usted ha seleccionado ${gameToBuy.name} con un precio base de ${gameToBuy.price}\n")
-        makePurchase(gameToBuy,userCurrentMoney)
-        userCurrentMoney = Credentials.getUserMoney()
-        showGames()
-        print("\nSu saldo actual es de $userCurrentMoney")
-        print("\nIngrese el ID del juego que quiere comprar o X para salir \n")
-        gameID = readln()
+    } catch (exc : NumberFormatException){
+        println("$gameID No es una opcion valida, intente nuevamente")
+    } finally {
+        showMainMenu()
+        showPurchaseMenu()
     }
+
+
+
 
 
 }
