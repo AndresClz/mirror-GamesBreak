@@ -5,6 +5,7 @@ import repositories.PurchaseRepository
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.DayOfWeek
+import java.time.Period
 import java.time.format.DateTimeFormatter
 
 fun main() {
@@ -149,6 +150,7 @@ fun showPurchaseMenu() {
 
         print("Usted ha seleccionado ${gameToBuy.name} con un precio base de ${gameToBuy.price}\n")
         makePurchase(gameToBuy,userCurrentMoney)
+
         showGames()
         print("\nSu saldo actual es de $userCurrentMoney")
         print("\nIngrese el ID del juego que quiere comprar o X para salir \n")
@@ -190,7 +192,7 @@ fun processPrice(gamePrice: Double): Double {
 }
 
 fun steamPriceProcess(price: Double): Double {
-   return (price + price.times(0.2))
+   return (price + price.times(0.02))
 }
 
 fun epicGamePriceProcess(price: Double): Double {
@@ -199,10 +201,10 @@ fun epicGamePriceProcess(price: Double): Double {
     val upperLimit = LocalTime.of(23,59)
 
     if((currentTime.isAfter(lowerLimit)) && (currentTime.isBefore(upperLimit))) {
-        return (price + price.times(0.1))
+        return (price + price.times(0.01))
     }
     else {
-        return (price + price.times(0.3))
+        return (price + price.times(0.03))
     }
 }
 
@@ -210,9 +212,9 @@ fun nakamaPriceProcess(price: Double): Double {
     val currentDate: LocalDate = LocalDate.now()
 
     if (currentDate.dayOfWeek == DayOfWeek.SATURDAY || currentDate.dayOfWeek == DayOfWeek.SUNDAY) {
-        return (price + price.times(0.3))
+        return (price + price.times(0.03))
     } else {
-        return (price + price.times(0.075))
+        return (price + price.times(0.0075))
     }
 }
 fun makePurchase(game: Game, userCurrentMoney: Double?) {
@@ -228,7 +230,7 @@ fun makePurchase(game: Game, userCurrentMoney: Double?) {
     when (shouldContinue) {
         "1"-> {
             PurchaseRepository.addItem(newPurchase)
-            var newUserMoney = userCurrentMoney?.minus(newPrice)
+            var newUserMoney = userCurrentMoney?.minus(newPrice)?.plus(applyCashback(newPurchase))
             if (newUserMoney != null) {
                 Credentials.updateUserMoney(newUserMoney)
             }
@@ -242,5 +244,18 @@ fun makePurchase(game: Game, userCurrentMoney: Double?) {
         }
 
     }
+}
+fun applyCashback(lastPurchase: Purchase): Double {
+    val currentDate: LocalDate = LocalDate.now()
+    val userAccountCreationDate = Credentials.getUserCreationDate()
+    val diff = Period.between(userAccountCreationDate,currentDate)
+    var monthsDiff = diff.toTotalMonths().toInt()
+    var cashBackAmount: Double = 0.0
 
+    if (monthsDiff <= 3) {
+        cashBackAmount = cashBackAmount.times(0.05)
+    } else if (monthsDiff <= 12) {
+        cashBackAmount = cashBackAmount.times(0.03)
+    }
+    return  cashBackAmount
 }
