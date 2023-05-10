@@ -32,7 +32,7 @@ object PurchaseRepository: RepositoryInterface<Purchase> {
     }
 
     override fun addItem(item: Purchase): Boolean {
-        TODO("Not yet implemented")
+        return purchases.add(item)
     }
 
 }

@@ -8,7 +8,7 @@ object Credentials {
     private var userName: String? = null
     private var userSurname: String? = null
     private var initDate: LocalDate? = null
-
+    private var userMoney: Double? = 0.0
     private var creationDate: String? = null
 
 
@@ -18,7 +18,7 @@ object Credentials {
         this.userName = user.nickName
         this.userSurname = user.surname
         this.creationDate = user.createdDate
-
+        this.userMoney = user.money
         val formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd")
         this.initDate = LocalDate.parse(creationDate,formatter)
     }
@@ -36,5 +36,11 @@ object Credentials {
     }
     fun getUserCreationDate(): String? {
         return this.creationDate
+    }
+    fun getUserMoney(): Double? {
+        return this.userMoney
+    }
+    fun updateUserMoney(newMoney:Double) {
+        this.userMoney = newMoney
     }
 }
