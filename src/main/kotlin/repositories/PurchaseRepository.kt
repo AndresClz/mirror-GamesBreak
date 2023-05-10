@@ -2,7 +2,7 @@ package repositories
 
 import data.Purchase
 
-object PurchaseRepository {
+object PurchaseRepository: RepositoryInterface<Purchase> {
 
     private val purchases = mutableListOf<Purchase>()
 
@@ -19,12 +19,20 @@ object PurchaseRepository {
         purchases.add(Purchase(10L, 1510L, 5L, 150.00, "2023/01/01"))
     }
 
-    fun add(purchase: Purchase) {
-        //TODO Implementar solucion para agregar una nueva compra
+    override fun getByID(id: String): Purchase? {
+        TODO("Not yet implemented")
     }
 
-    fun get() : List<Purchase> {
-        return emptyList() //TODO Implementar solucion para obtener todos los juegos
+    override fun getAll(): List<Purchase>? {
+        return purchases
+    }
+
+    override fun removeItem(id: Long): Boolean {
+        TODO("Not yet implemented")
+    }
+
+    override fun addItem(item: Purchase): Boolean {
+        return purchases.add(item)
     }
 
 }

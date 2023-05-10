@@ -1,8 +1,9 @@
 package repositories
 
 import data.Game
+import java.util.*
 
-object GameRepository {
+object GameRepository: RepositoryInterface<Game> {
 
     private val games = mutableListOf<Game>()
 
@@ -22,12 +23,25 @@ object GameRepository {
         games.add(Game(13L, "God of War: Ragnarok", "2022", "Aventura", 5350.00, "https://assets-prd.ignimgs.com/2022/07/25/9781506733494-1658716557072.jpg"))
     }
 
-    fun get() : List<Game> {
-        return emptyList() //TODO Implementar solucion para obtener todos los juegos
+    override fun getByID(id: String): Game? {
+        for(game in games) {
+            if (game.id == id.toLong()) {
+                return game
+            }
+        }
+        return null
     }
 
-    fun getById(id: Long) : Game {
-        return games[0] //TODO Implementar solucion para obtener el juego solicitado
+    override fun getAll(): List<Game>? {
+        return games
+    }
+
+    override fun removeItem(id: Long): Boolean {
+        TODO("Not yet implemented")
+    }
+
+    override fun addItem(item: Game): Boolean {
+        TODO("Not yet implemented")
     }
 
 }
