@@ -19,7 +19,7 @@ fun startInitialMenu(){
     showUserOptions()
 }
 fun showMainMenu() {
-    var shouldShowGames: Boolean = true
+    var shouldShowGames = true
 
     if(UserSession.isUserLogged()) {
         print("\nQue desea hacer?")
@@ -117,7 +117,7 @@ fun showPurchaseMenu() {
         showGames()
     }
 
-    val userCurrentMoney = Credentials.getUserMoney()
+    var userCurrentMoney = Credentials.getUserMoney()
     print("\nSu saldo actual es de $userCurrentMoney")
 
     print("\nIngrese el ID del juego que quiere comprar o X para salir \n")
@@ -141,7 +141,7 @@ fun showPurchaseMenu() {
             gameID = readln()
             if (gameID.lowercase() == "x"){ return }
             gameToBuy = GameRepository.getByID(gameID)
-            gameFound= (gameToBuy == null)
+            gameFound = (if(gameToBuy == null) false else true)
             canBePurchased = (canUserBuyIt( if (gameFound) gameToBuy!!.price else 0.0))
 
         }
@@ -150,7 +150,7 @@ fun showPurchaseMenu() {
 
         print("Usted ha seleccionado ${gameToBuy.name} con un precio base de ${gameToBuy.price}\n")
         makePurchase(gameToBuy,userCurrentMoney)
-
+        userCurrentMoney = Credentials.getUserMoney()
         showGames()
         print("\nSu saldo actual es de $userCurrentMoney")
         print("\nIngrese el ID del juego que quiere comprar o X para salir \n")
@@ -176,7 +176,7 @@ fun preparePurchase(game: Game): Purchase {
 
 fun processPrice(gamePrice: Double): Double {
     print("Ingrese que intermediario quiere usar:")
-    var newPrice: Double = 0.0
+    var newPrice = 0.0
     print("\n 1. Steam \t 2.Epic Games\t 3.Nakama: \n")
     var userIntermediary = readln()
     while (userIntermediary != "1" && userIntermediary != "2" && userIntermediary != "3"){
@@ -185,7 +185,7 @@ fun processPrice(gamePrice: Double): Double {
     }
     when (userIntermediary) {
         "1"-> newPrice = steamPriceProcess(gamePrice)
-        "2"-> newPrice = epicGamePriceProcess(gamePrice)
+        "2"-> newPrice = epicGamesPriceProcess(gamePrice)
         "3"-> newPrice = nakamaPriceProcess(gamePrice)
     }
     return newPrice
@@ -195,16 +195,16 @@ fun steamPriceProcess(price: Double): Double {
    return (price + price.times(0.02))
 }
 
-fun epicGamePriceProcess(price: Double): Double {
+fun epicGamesPriceProcess(price: Double): Double {
     val currentTime: LocalTime = LocalTime.now()
     val lowerLimit = LocalTime.of(20,0)
     val upperLimit = LocalTime.of(23,59)
 
-    if((currentTime.isAfter(lowerLimit)) && (currentTime.isBefore(upperLimit))) {
-        return (price + price.times(0.01))
+    return if((currentTime.isAfter(lowerLimit)) && (currentTime.isBefore(upperLimit))) {
+        (price + price.times(0.01))
     }
     else {
-        return (price + price.times(0.03))
+        (price + price.times(0.03))
     }
 }
 
@@ -218,8 +218,8 @@ fun nakamaPriceProcess(price: Double): Double {
     }
 }
 fun makePurchase(game: Game, userCurrentMoney: Double?) {
-    var newPurchase = preparePurchase(game)
-    var newPrice = newPurchase.amount
+    val newPurchase = preparePurchase(game)
+    val newPrice = newPurchase.amount
     print("Esta por comprar " + game.name.padEnd(game.name.length) + " por un precio de " + newPrice.toString().padEnd(8)+"\n")
     print("Desea continuar? \n 1. Si \t 2. Cancelar\n")
     var shouldContinue = readln()
@@ -230,7 +230,7 @@ fun makePurchase(game: Game, userCurrentMoney: Double?) {
     when (shouldContinue) {
         "1"-> {
             PurchaseRepository.addItem(newPurchase)
-            var newUserMoney = userCurrentMoney?.minus(newPrice)?.plus(applyCashback(newPurchase))
+            val newUserMoney = userCurrentMoney?.minus(newPrice)?.plus(applyCashback(newPurchase))
             if (newUserMoney != null) {
                 Credentials.updateUserMoney(newUserMoney)
             }
@@ -249,13 +249,13 @@ fun applyCashback(lastPurchase: Purchase): Double {
     val currentDate: LocalDate = LocalDate.now()
     val userAccountCreationDate = Credentials.getUserCreationDate()
     val diff = Period.between(userAccountCreationDate,currentDate)
-    var monthsDiff = diff.toTotalMonths().toInt()
-    var cashBackAmount: Double = 0.0
+    val monthsDiff = diff.toTotalMonths().toInt()
+    var cashBackAmount = 0.0
 
     if (monthsDiff <= 3) {
-        cashBackAmount = cashBackAmount.times(0.05)
+        cashBackAmount = lastPurchase.amount.times(0.05)
     } else if (monthsDiff <= 12) {
-        cashBackAmount = cashBackAmount.times(0.03)
+        cashBackAmount = lastPurchase.amount.times(0.03)
     }
     return  cashBackAmount
 }

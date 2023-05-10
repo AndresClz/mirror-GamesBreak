@@ -1,6 +1,7 @@
 import data.User
 import java.time.*
 import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeParseException
 
 object Credentials {
     private var userNickName: String? = null
@@ -19,8 +20,13 @@ object Credentials {
         this.userSurname = user.surname
         this.creationDate = user.createdDate
         this.userMoney = user.money
-        val formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd")
-        this.initDate = LocalDate.parse(creationDate,formatter)
+
+        try {
+            val formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd")
+            this.initDate = LocalDate.parse(creationDate, formatter)
+        } catch (e: DateTimeParseException) {
+            throw IllegalArgumentException("Fecha inválida: $creationDate")
+        }
     }
     fun getUserNickName(): String? {
         return this.userNickName
