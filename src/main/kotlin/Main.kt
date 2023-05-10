@@ -179,6 +179,7 @@ fun preparePurchase(game: Game): Purchase {
     val userID = Credentials.getUserID() ?: 0L
     val todayDate = LocalDate.now()
     val formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd")
+
     val formattedDate = todayDate.format(formatter)
     val price = processPrice(game.price)
     return Purchase(lastPurchaseID, userID, game.id, price, formattedDate)
@@ -200,6 +201,7 @@ fun processPrice(gamePrice: Double): Double {
         else -> SteamIntermediary()
     }
     return intermediary.processPurchase(gamePrice)
+
 }
 
 fun makePurchase(game: Game, userCurrentMoney: Double?) {
