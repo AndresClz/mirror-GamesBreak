@@ -1,6 +1,6 @@
 package repositories
 
-public interface RepositoryInterface<T> {
+interface RepositoryInterface<T> {
     fun getByID(id: String): T?
     fun getAll(): List<T>?
     fun addItem(item: T): Boolean

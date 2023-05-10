@@ -1,5 +1,6 @@
 import data.Game
 import data.Purchase
+import intermediaries.*
 import repositories.GameRepository
 import repositories.PurchaseRepository
 import java.time.LocalDate
@@ -175,6 +176,7 @@ fun preparePurchase(game: Game): Purchase {
 }
 
 fun processPrice(gamePrice: Double): Double {
+    var intermediary: IntermediaryInterface = Intermediary(gamePrice)
     print("Ingrese que intermediario quiere usar:")
     var newPrice = 0.0
     print("\n 1. Steam \t 2.Epic Games\t 3.Nakama: \n")
@@ -184,39 +186,14 @@ fun processPrice(gamePrice: Double): Double {
         userIntermediary = readln()
     }
     when (userIntermediary) {
-        "1"-> newPrice = steamPriceProcess(gamePrice)
-        "2"-> newPrice = epicGamesPriceProcess(gamePrice)
-        "3"-> newPrice = nakamaPriceProcess(gamePrice)
+        "1"-> intermediary = SteamIntermediary(gamePrice)
+        "2"-> intermediary = EpicGamesIntermediary(gamePrice)
+        "3"-> intermediary = NakamaIntermediary(gamePrice)
     }
+    newPrice = intermediary.processPurchase()
     return newPrice
 }
 
-fun steamPriceProcess(price: Double): Double {
-   return (price + price.times(0.02))
-}
-
-fun epicGamesPriceProcess(price: Double): Double {
-    val currentTime: LocalTime = LocalTime.now()
-    val lowerLimit = LocalTime.of(20,0)
-    val upperLimit = LocalTime.of(23,59)
-
-    return if((currentTime.isAfter(lowerLimit)) && (currentTime.isBefore(upperLimit))) {
-        (price + price.times(0.01))
-    }
-    else {
-        (price + price.times(0.03))
-    }
-}
-
-fun nakamaPriceProcess(price: Double): Double {
-    val currentDate: LocalDate = LocalDate.now()
-
-    if (currentDate.dayOfWeek == DayOfWeek.SATURDAY || currentDate.dayOfWeek == DayOfWeek.SUNDAY) {
-        return (price + price.times(0.03))
-    } else {
-        return (price + price.times(0.0075))
-    }
-}
 fun makePurchase(game: Game, userCurrentMoney: Double?) {
     val newPurchase = preparePurchase(game)
     val newPrice = newPurchase.amount
