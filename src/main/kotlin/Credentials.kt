@@ -22,4 +22,19 @@ object Credentials {
         val formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd")
         this.initDate = LocalDate.parse(creationDate,formatter)
     }
+    fun getUserNickName(): String? {
+        return this.userNickName
+    }
+    fun getUserID(): Long? {
+        return this.userID
+    }
+    fun getUserName(): String? {
+        return this.userName
+    }
+    fun getUserSurname(): String? {
+        return this.userSurname
+    }
+    fun getUserCreationDate(): String? {
+        return this.creationDate
+    }
 }

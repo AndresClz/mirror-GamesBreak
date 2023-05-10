@@ -1,6 +1,7 @@
 package repositories
 
 import data.Game
+import java.util.*
 
 object GameRepository: RepositoryInterface<Game> {
 
@@ -22,21 +23,17 @@ object GameRepository: RepositoryInterface<Game> {
         games.add(Game(13L, "God of War: Ragnarok", "2022", "Aventura", 5350.00, "https://assets-prd.ignimgs.com/2022/07/25/9781506733494-1658716557072.jpg"))
     }
 
-    fun get() : List<Game> {
-
-        return emptyList() //TODO Implementar solucion para obtener todos los juegos
-    }
-
-    fun getById(id: Long) : Game {
-        return games[0] //TODO Implementar solucion para obtener el juego solicitado
-    }
-
     override fun getByID(id: String): Game? {
-        TODO("Not yet implemented")
+        for(game in games) {
+            if (game.id == id.toLong()) {
+                return game
+            }
+        }
+        return null
     }
 
     override fun getAll(): List<Game>? {
-        TODO("Not yet implemented")
+        return games
     }
 
     override fun removeItem(id: Long): Boolean {

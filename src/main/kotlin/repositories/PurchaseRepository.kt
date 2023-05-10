@@ -19,20 +19,12 @@ object PurchaseRepository: RepositoryInterface<Purchase> {
         purchases.add(Purchase(10L, 1510L, 5L, 150.00, "2023/01/01"))
     }
 
-    fun add(purchase: Purchase) {
-        //TODO Implementar solucion para agregar una nueva compra
-    }
-
-    fun get() : List<Purchase> {
-        return emptyList() //TODO Implementar solucion para obtener todos los juegos
-    }
-
     override fun getByID(id: String): Purchase? {
         TODO("Not yet implemented")
     }
 
     override fun getAll(): List<Purchase>? {
-        TODO("Not yet implemented")
+        return purchases
     }
 
     override fun removeItem(id: Long): Boolean {
