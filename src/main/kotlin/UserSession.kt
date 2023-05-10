@@ -9,7 +9,7 @@ object UserSession {
                     password: String,
                     onSuccess: (User) -> Unit,
                     onFailure: () -> Unit) {
-        val currentUser: Unit = userRepository.getByID(user).let {it
+        userRepository.getByID(user).let {it
             if (it != null) {
                 if (password == it.password){
                     Credentials.loadCredentials(it)
