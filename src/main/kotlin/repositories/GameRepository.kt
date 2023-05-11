@@ -1,8 +1,6 @@
 package repositories
 
 import data.Game
-import java.util.*
-
 object GameRepository: RepositoryInterface<Game> {
 
     private val games = mutableListOf<Game>()
@@ -24,6 +22,9 @@ object GameRepository: RepositoryInterface<Game> {
     }
 
     override fun getByID(id: String): Game? {
+        if (id.all { it.isLetter() }) {
+            return null
+        }
         for(game in games) {
             if (game.id == id.toLong()) {
                 return game
